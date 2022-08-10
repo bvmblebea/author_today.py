@@ -8,5 +8,5 @@ Web-API for [author_today](https://author.today) website for reading books
 # Simple Login
 import author_today
 author_today = author_today.AuthorToday()
-author_today.auth(email="", password="")
+author_today.login(email="", password="")
 ```
