@@ -1,5 +1,5 @@
 # author_today.py
-Web-API for [author_today](https://author.today) website for reading books
+Web-API for [author.today](https://author.today) russian website to read books
 
 ![](https://i.ibb.co/bPczC1g/1636977124081.jpg)
 
