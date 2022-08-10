@@ -1,7 +1,7 @@
-# AuthorToday.py
-Web-API for https://author.today
+# author_today.py
+Web-API for [author_today](https://author.today) website for reading books
 
-![AuthorTodayAPI](https://i.ibb.co/bPczC1g/1636977124081.jpg)
+![](https://i.ibb.co/bPczC1g/1636977124081.jpg)
 
 ## Example
 ```py3
