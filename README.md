@@ -7,8 +7,6 @@ Web-API for [author_today](https://author.today) website for reading books
 ```py3
 # Simple Login
 import author_today
-client = author_today.Client()
-email = input("Email >> ")
-password = input("Password >> ")
-client.auth(email=email, password=password)
+author_today = author_today.AuthorToday()
+author_today.auth(email="", password="")
 ```
