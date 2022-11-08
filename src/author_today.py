@@ -6,26 +6,35 @@ class AuthorToday:
 		self.web_api = "https://author.today"
 		self.token = "Bearer guest"
 		self.headers = {
-			"Authorization": self.token,
-			"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
-			"X-Requested-With": "XMLHttpRequest"
+			"authorization": self.token,
+			"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
+			"x-requested-with": "XMLHttpRequest"
 		}
 	
-	def login(self, email: str, password: str):
+	def login(self, login: str, password: str):
 		data = {
-			"Login": email,
-			"Password": password
+			"login": login,
+			"password": password
 		}
 		response = requests.post(
 			f"{self.api}/v1/account/login-by-password",
 			json=data,
 			headers=self.headers).json()
 		if "token" in response:
-			self.token = json["token"]
-			self.headers["Authorization"] = f"Bearer {self.token}"
+			self.token = response["token"]
+			self.headers["authorization"] = f"Bearer {self.token}"
+			self.user_id = self.get_account_info()["id"]
 		return response 
 	
-	def get_current_user(self):
+	def login_with_token(self, token: str):
+		self.token = token
+		self.headers["authorization"] = f"Bearer {self.token}"
+		response = self.get_account_info()
+		if "id" in response:
+			self.user_id = response["id"]
+		return response
+
+	def get_account_info(self):
 		return requests.get(
 			f"{self.api}/v1/account/current-user",
 			headers=self.headers).json()
@@ -36,9 +45,10 @@ class AuthorToday:
 			email: str,
 			password: str):
 		data = {
-			"FIO": nickname,
-			"Email": email,
-			"Password": password
+			"email": email,
+			"fio": nickname,
+			"password": password,
+			"termsAgree": True
 		}
 		return requests.post(
 			f"{self.api}/v1/account/register",
@@ -51,14 +61,16 @@ class AuthorToday:
 			headers=self.headers).json()
 
 	def recover_password(self, email: str):
-		data = {"Email": email}
+		data = {
+			"email": email
+		}
 		return requests.post(
 			f"{self.api}/v1/account/password/recovery",
 			headers=self.headers).json()
 
 	def check_notifications(self):
 		return requests.get(
-			f"{self.web_api}/notification/check?",
+			f"{self.web_api}/notification/check",
 			headers=self.headers).json()
 
 	def get_work_content(self, work_id: int):
@@ -188,7 +200,9 @@ class AuthorToday:
 			headers=self.headers).json()
 
 	def add_user_to_ignore(self, user_id: str):
-		data = {"userId": user_id}
+		data = {
+			"userId": user_id
+		}
 		return requests.post(
 			f"{self.web_api}/ignoreList/add",
 			data=data,
@@ -201,4 +215,37 @@ class AuthorToday:
 			is_liked: bool = True):
 		return requests.post(
 			f"{self.api}/v1/work/{work_id}/like?isLiked={is_liked}",
+			headers=self.headers).json()
+
+	def get_account_library(self):
+		return requests.get(
+			f"{self.api}/v1/account/user-library",
+			headers=self.headers).json()
+
+	def get_catalog(
+			self,
+			sorting: str,
+			page: int = 1,
+			ps: int = 40,
+			genre: str = "all",
+			form: str = "any",
+			state: str = "any",
+			series: str = "any",
+			access: str = "any",
+			dnl: str = "any",
+			promo: str = "hide",
+			upd: int = -1,
+			pub: int = -1,
+			length: str = "any",
+			fnd: bool = False,
+			rec: bool = False,
+			exc: bool = False,
+			disc: bool = False):
+		return requests.get(
+			f"{self.api}/v1/catalog/search?page={page}&ps={ps}&genre={genre}&sorting={sorting}&form={form}&state={state}&series={series}&access={access}&dnl={dnl}&promo={promo}&upd={upd}&pub={pub}&length={length}&fnd={fnd}&rec={rec}&exc={exc}&disc={disc}",
+			headers=self.headers).json()
+
+	def get_home_page(self, view: str = "all"):
+		return requests.get(
+			f"{self.api}/v1/home/home-page?View={view}",
 			headers=self.headers).json()
