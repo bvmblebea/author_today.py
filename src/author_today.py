@@ -1,7 +1,7 @@
 import requests
 
 class AuthorToday:
-	def __init__(self):
+	def __init__(self) -> None:
 		self.api = "https://api.author.today"
 		self.web_api = "https://author.today"
 		self.token = "Bearer guest"
@@ -11,7 +11,10 @@ class AuthorToday:
 			"x-requested-with": "XMLHttpRequest"
 		}
 	
-	def login(self, login: str, password: str):
+	def login(
+			self,
+			login: str,
+			password: str) -> dict:
 		data = {
 			"login": login,
 			"password": password
@@ -26,7 +29,7 @@ class AuthorToday:
 			self.user_id = self.get_account_info()["id"]
 		return response 
 	
-	def login_with_token(self, token: str):
+	def login_with_token(self, token: str) -> dict:
 		self.token = token
 		self.headers["authorization"] = f"Bearer {self.token}"
 		response = self.get_account_info()
@@ -34,7 +37,7 @@ class AuthorToday:
 			self.user_id = response["id"]
 		return response
 
-	def get_account_info(self):
+	def get_account_info(self) -> dict:
 		return requests.get(
 			f"{self.api}/v1/account/current-user",
 			headers=self.headers).json()
@@ -43,7 +46,7 @@ class AuthorToday:
 			self,
 			nickname: str,
 			email: str,
-			password: str):
+			password: str) -> dict:
 		data = {
 			"email": email,
 			"fio": nickname,
@@ -55,12 +58,12 @@ class AuthorToday:
 			json=data,
 			headers=self.headers).json()
 
-	def refresh_token(self):
+	def refresh_token(self) -> dict:
 		return requests.post(
 			f"{self.api}/v1/account/refresh-token",
 			headers=self.headers).json()
 
-	def recover_password(self, email: str):
+	def recover_password(self, email: str) -> dict:
 		data = {
 			"email": email
 		}
@@ -68,17 +71,17 @@ class AuthorToday:
 			f"{self.api}/v1/account/password/recovery",
 			headers=self.headers).json()
 
-	def check_notifications(self):
+	def check_notifications(self) -> dict:
 		return requests.get(
 			f"{self.web_api}/notification/check",
 			headers=self.headers).json()
 
-	def get_work_content(self, work_id: int):
+	def get_work_content(self, work_id: int) -> dict:
 		return requests.get(
 			f"{self.api}/v1/work/{work_id}/content",
 			headers=self.headers).json()
 
-	def get_work_meta_info(self, work_id: int):
+	def get_work_meta_info(self, work_id: int) -> dict:
 		return requests.get(
 			f"{self.api}/v1/work/{work_id}/meta-info",
 			headers=self.headers).json()
@@ -91,7 +94,7 @@ class AuthorToday:
 			birthday_day: int = None,
 			birthday_month: int = None,
 			birthday_year: int = None,
-			sex: int = -1):
+			sex: int = -1) -> dict:
 		data = {}
 		if username:
 			data["UserName"] = username
@@ -112,17 +115,17 @@ class AuthorToday:
 			data=data,
 			headers=self.headers).json()
 
-	def get_disputed_works(self):
+	def get_disputed_works(self) -> dict:
 		return requests.get(
 			f"{self.web_api}/widget/disputedWorks",
 			headers=self.headers).json()
 
-	def track_last_activity(self):
+	def track_last_activity(self) -> dict:
 		return requests.post(
 			f"{self.web_api}/account/trackLastActivity",
 			headers=self.headers).json()
 
-	def add_to_library(self, id: int, state: str):
+	def add_to_library(self, id: int, state: str) -> dict:
 		data = {
 			"ids": [id],
 			"state": state
@@ -138,7 +141,7 @@ class AuthorToday:
 			comment: str,
 			target_id: int,
 			target_type: str,
-			url: str):
+			url: str) -> dict:
 		data = {
 			"TargetId": target_id,
 			"targetType": target_type,
@@ -151,17 +154,23 @@ class AuthorToday:
 			json=data,
 			headers=self.headers).json()
 
-	def search(self, title: str):
+	def search(self, title: str) -> dict:
 		return requests.get(
 			f"{self.web_api}/search?q={title}",
 			headers=self.headers).json()
 
-	def get_chapter(self, work_id: int, chapter_id: int):
+	def get_chapter(
+			self,
+			work_id: int,
+			chapter_id: int) -> dict:
 		return requests.get(
 			f"{self.web_api}/reader/{work_id}/chapter?id={chapter_id}",
 			headers=self.headers).json()
 
-	def send_message(self, message: str, chat_id: int):
+	def send_message(
+			self,
+			message: str,
+			chat_id: int) -> dict:
 		data = {
 			"chatId": chat_id,
 			"text": f"<p>{message}<p>"
@@ -171,24 +180,26 @@ class AuthorToday:
 			data=data,
 			headers=self.headers).json()
 
-	def mark_as_read(self, chat_id: int):
-		data = {"chatId": chat_id}
+	def mark_as_read(self, chat_id: int) -> dict:
+		data = {
+			"chatId": chat_id
+		}
 		return requests.post(
 			f"{self.web_api}/pm/markAsRead",
 			data=data,
 			headers=self.headers).json()
 
-	def get_chat_messages(self, chat_id: int):
+	def get_chat_messages(self, chat_id: int) -> dict:
 		return requests.get(
 			f"{self.web_api}/pm/messages?id={chat_id}",
 			headers=self.headers).json()
 
-	def get_my_chats(self, page: int = 1):
+	def get_my_chats(self, page: int = 1) -> dict:
 		return requests.get(
 			f"{self.web_api}/pm/recentChats?page={page}&onlyUnread=false",
 			headers=self.headers).json()
 
-	def follow_user(self, user_id: str):
+	def follow_user(self, user_id: str) -> dict:
 		data = {
 			"subscribe": True,
 			"toggleOnlyShowingUpdates": False,
@@ -199,7 +210,7 @@ class AuthorToday:
 			data=data,
 			headers=self.headers).json()
 
-	def add_user_to_ignore(self, user_id: str):
+	def add_user_to_ignore(self, user_id: str) -> dict:
 		data = {
 			"userId": user_id
 		}
@@ -212,12 +223,12 @@ class AuthorToday:
 	def like_work(
 			self,
 			work_id: int,
-			is_liked: bool = True):
+			is_liked: bool = True) -> dict:
 		return requests.post(
 			f"{self.api}/v1/work/{work_id}/like?isLiked={is_liked}",
 			headers=self.headers).json()
 
-	def get_account_library(self):
+	def get_account_library(self) -> dict:
 		return requests.get(
 			f"{self.api}/v1/account/user-library",
 			headers=self.headers).json()
@@ -240,12 +251,12 @@ class AuthorToday:
 			fnd: bool = False,
 			rec: bool = False,
 			exc: bool = False,
-			disc: bool = False):
+			disc: bool = False) -> dict:
 		return requests.get(
 			f"{self.api}/v1/catalog/search?page={page}&ps={ps}&genre={genre}&sorting={sorting}&form={form}&state={state}&series={series}&access={access}&dnl={dnl}&promo={promo}&upd={upd}&pub={pub}&length={length}&fnd={fnd}&rec={rec}&exc={exc}&disc={disc}",
 			headers=self.headers).json()
 
-	def get_home_page(self, view: str = "all"):
+	def get_home_page(self, view: str = "all") -> dict:
 		return requests.get(
 			f"{self.api}/v1/home/home-page?View={view}",
 			headers=self.headers).json()
